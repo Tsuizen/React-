@@ -3,6 +3,8 @@
 # dependencies
 /node_modules
 /.pnp
+/课件资料
+/build
 .pnp.js
 
 # testing
