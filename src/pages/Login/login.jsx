@@ -1,14 +1,51 @@
 import React from 'react'
-import { Form, Input, Button } from 'antd'
+import { Redirect, useHistory } from 'react-router-dom'
+import { Form, Input, Button, message } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 
 import './index.less'
-import logo from './images/logo.png'
+import logo from '../../assets/images/logo.png'
+import { reqLogin } from '../../api'
+import memoryUtils from '../../utils/memoryUtils'
+import storageUtils from '../../utils/storageUtils'
 
 /* 登陆路由组件 */
 export default function Login() {
-  const onFinish = (values) => {
-    console.log('Received values of form: ', values)
+  const history = useHistory()
+
+  //如果用户已经登陆
+  const user = memoryUtils.user
+  if (user._id) {
+    console.log('test')
+    return <Redirect to="/" />
+  }
+
+  //提交ajax请求
+  const onFinish = async (values, err) => {
+    const { username, password } = values
+    try {
+      const response = await reqLogin(username, password)
+      const result = response.data
+
+      if (result.status === 0) {
+        message.success('登陆成功')
+
+        const user = result.data
+        memoryUtils.user = user //保存在内存中
+        storageUtils.saveUser(user) //保存在local中
+
+        history.replace('/')
+        //跳转到管理界面
+      } else {
+        message.error(result.msg)
+      }
+    } catch {
+      console.log('请求失败', err)
+    }
+  }
+
+  const onFinishFailed = (err) => {
+    console.log(err)
   }
 
   return (
@@ -24,6 +61,7 @@ export default function Login() {
           className="login-form"
           initialValues={{ remember: true }}
           onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
         >
           <Form.Item
             name="username"
@@ -47,7 +85,7 @@ export default function Login() {
             rules={[
               { required: true, message: '密码不能为空' },
               { max: 12, message: '密码不能多于12个字符' },
-              { min: 4, message: '密码不能少于4个字符' },
+              { min: 3, message: '密码不能少于4个字符' },
               {
                 pattern: /^[0-9a-zA-Z]+$/,
                 message: '密码必须是英文，数字或下划线'
