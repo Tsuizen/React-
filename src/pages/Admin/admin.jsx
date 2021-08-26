@@ -32,17 +32,17 @@ export default function Admin() {
         </Sider>
         <Layout>
           <Header />
-          <Content style={{ backgroundColor: 'white' }}>
+          <Content style={{ margin: 20, backgroundColor: 'white' }}>
             <Switch>
-              <Route path='/home' component={Home} />
-              <Route path='/category' component={Category} />
-              <Route path='/product' component={Product} />
-              <Route path='/role' component={Role} />
-              <Route path='/user' component={User} />
-              <Route path='/charts/bar' component={Bar} />
-              <Route path='/charts/Line' component={Line} />
-              <Route path='/charts/Pie' component={Pie} />
-              <Redirect to='/home'/>
+              <Route path="/home" component={Home} />
+              <Route path="/category" component={Category} />
+              <Route path="/product" component={Product} />
+              <Route path="/role" component={Role} />
+              <Route path="/user" component={User} />
+              <Route path="/charts/bar" component={Bar} />
+              <Route path="/charts/Line" component={Line} />
+              <Route path="/charts/Pie" component={Pie} />
+              <Redirect to="/home" />
             </Switch>
           </Content>
           <Footer style={{ textAlign: 'center', color: 'gray' }}>Footer</Footer>

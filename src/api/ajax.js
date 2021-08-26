@@ -9,30 +9,46 @@
 import axios from 'axios'
 import { message } from 'antd'
 
-export default function ajax(url, data = {}, type = 'GET') {
-  return new Promise((resolve, reject) => {
-    // 1.ajax异步请求
-
-    let promise
+export default async function ajax(url, data = {}, type = 'GET') {
+  let response
+  try {
     if (type === 'GET') {
-      promise = axios.get(url, {
+      response = await axios.get(url, {
         params: data //指定请求参数
       })
-    } else {
-      promise = axios.post(url, data)
+    } else {    
+      response = await axios.post(url, data)
     }
-
-    promise
-      .then((response) => {
-        // 2.如果成功了，调用resolve
-        resolve(response)
-      })
-      .catch((error) => {
-        // 3.如果失败了，不调用reject，而是提示异常信息
-        message.error('请求出错了：' + error.message)
-      })
-  })
+    return response
+  } catch (error) {
+    message.error('error')
+  }
 }
+
+// export default function ajax(url, data = {}, type = 'GET') {
+//   return new Promise((resolve, reject) => {
+//     // 1.ajax异步请求
+
+//     let promise
+//     if (type === 'GET') {
+//       promise = axios.get(url, {
+//         params: data //指定请求参数
+//       })
+//     } else {
+//       promise = axios.post(url, data)
+//     }
+
+//     promise
+//       .then((response) => {
+//         // 2.如果成功了，调用resolve
+//         resolve(response)
+//       })
+//       .catch((error) => {
+//         // 3.如果失败了，不调用reject，而是提示异常信息
+//         message.error('请求出错了：' + error.message)
+//       })
+//   })
+// }
 //请求登陆接口
 // ajax('/login', {username: 'Tom', password: '12345'}, 'POST').then()
 //添加用户信息

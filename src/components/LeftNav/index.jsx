@@ -1,16 +1,42 @@
 import React, { useState } from 'react'
 import { Menu } from 'antd'
-import { PieChartOutlined, MailOutlined, UserOutlined } from '@ant-design/icons'
 
 import './index.less'
 import logo from '../../assets/images/logo.png'
-import { Link } from 'react-router-dom'
+import menuList from '../../config/menuConfig.js'
+import { Link, useLocation } from 'react-router-dom'
 
 const { SubMenu } = Menu
 
 export default function LeftNav() {
   // eslint-disable-next-line
   const [collapsed, setCollapsed] = useState(false)
+  const location = useLocation()
+  let path = location.pathname
+  let openKey = null
+
+  const getMenuList = (menuList) => {
+    return menuList.map((item) => {
+      if (!item.children) {
+        return (
+          <Menu.Item key={item.key} icon={item.icon}>
+            <Link to={item.key}>{item.title}</Link>
+          </Menu.Item>
+        )
+      } else {
+        if (item.children.find((cItem) => path.indexOf(cItem.key) === 0)) {
+         openKey = item.key
+        }
+        return (
+          <SubMenu key={item.key} icon={item.icon} title={item.title}>
+            {getMenuList(item.children)}
+          </SubMenu>
+        )
+      }
+    })
+  }
+
+  let menuNodes = getMenuList(menuList)
 
   return (
     <div className="left-nav">
@@ -20,30 +46,13 @@ export default function LeftNav() {
       </Link>
       <div>
         <Menu
-          defaultSelectedKeys={['1']}
-          defaultOpenKeys={['sub1']}
+          selectedKeys={[path]}
+          defaultOpenKeys={[openKey]}
           mode="inline"
           theme="dark"
           // inlineCollapsed={collapsed}
         >
-          <Menu.Item key="home" icon={<PieChartOutlined />}>
-            <Link to="/home">首页</Link>
-          </Menu.Item>
-
-          <SubMenu key="sub1" icon={<MailOutlined />} title="商品">
-            <Menu.Item key="category" icon={<PieChartOutlined />}>
-              <Link to="/category">品类管理</Link>
-            </Menu.Item>
-            <Menu.Item key="product" icon={<PieChartOutlined />}>
-              <Link to="/product">商品管理</Link>
-            </Menu.Item>
-          </SubMenu>
-          <Menu.Item key="user" icon={<UserOutlined />} title="用户">
-            <Link to="/user">用户</Link>
-          </Menu.Item>
-          <Menu.Item key="role" icon={<UserOutlined />} title="角色">
-            <Link to="/role">角色</Link>
-          </Menu.Item>
+          {menuNodes}
         </Menu>
       </div>
     </div>
