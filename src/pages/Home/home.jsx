@@ -1,9 +1,11 @@
 import React from 'react'
 
+import './home.less'
+
 export default function Home() {
   return (
-    <div>
-      home
+    <div className="home">
+      欢迎使用硅谷后台系统
     </div>
   )
 }

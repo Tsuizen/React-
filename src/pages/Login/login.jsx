@@ -16,7 +16,6 @@ export default function Login() {
   //如果用户已经登陆
   const user = memoryUtils.user
   if (user._id) {
-    console.log('test')
     return <Redirect to="/" />
   }
 

@@ -22,7 +22,6 @@ export const reqWeather = () => {
     jsonp(url, { param: 'callback' }, (error, response) => {
       if (!error && response.status === '1') {
         const weather = response.lives[0].weather
-        console.log(weather);
         resolve(weather)
       } else {
         alert('获取天气信息失败')
@@ -30,3 +29,15 @@ export const reqWeather = () => {
     })
   })
 }
+
+/* 获取一级/二级分类列表 */
+export const reqCategories = (parentId) =>
+  ajax(BASE + '/manage/category/list', { parentId })
+
+/* 添加分类 */
+export const reqAddCategory = (categoryName, parentId) =>
+  ajax(BASE + '/manage/category/add', { categoryName, parentId }, 'POST')
+
+/* 更新分类 */
+export const reqUpdateCategory = (categoryId, categoryName) =>
+  ajax(BASE + '/manage/category/update', { categoryId, categoryName }, 'POST')

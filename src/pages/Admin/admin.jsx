@@ -26,13 +26,19 @@ export default function Admin() {
   }
   return (
     <>
-      <Layout style={{ height: '100%' }}>
+      <Layout style={{ minHeight: '100%' }}>
         <Sider>
           <LeftNav />
         </Sider>
         <Layout>
           <Header />
-          <Content style={{ margin: 20, backgroundColor: 'white' }}>
+          <Content
+            style={{
+              margin: '20px 20px 0',
+              backgroundColor: 'white',
+              overflow: 'initial'
+            }}
+          >
             <Switch>
               <Route path="/home" component={Home} />
               <Route path="/category" component={Category} />
@@ -45,7 +51,9 @@ export default function Admin() {
               <Redirect to="/home" />
             </Switch>
           </Content>
-          <Footer style={{ textAlign: 'center', color: 'gray' }}>Footer</Footer>
+          <Footer style={{ textAlign: 'center', color: 'gray' }}>
+            推荐使用谷歌浏览器， 可以获得更佳页面操作体验
+          </Footer>
         </Layout>
       </Layout>
     </>
