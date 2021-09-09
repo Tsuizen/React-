@@ -18,7 +18,6 @@ const { Footer, Sider, Content } = Layout
 
 export default function Admin() {
   const user = memoryUtils.user
-  if (user) console.log('内存中有user：' + user)
   //如果内存中没有user=>当前没有登陆
   if (!user) {
     //自动跳转到登陆

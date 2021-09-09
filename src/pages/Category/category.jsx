@@ -1,15 +1,11 @@
 import { React, useState, useEffect } from 'react'
-import { Form, Card, Table, Button, message, Modal } from 'antd'
+import { Card, Table, Button, message, Modal } from 'antd'
 import { PlusOutlined, ArrowRightOutlined } from '@ant-design/icons'
 
-import {
-  reqCategories,
-  reqAddCategory,
-  reqUpdateCategory,
-  reqWeather
-} from '../../api'
+import { reqCategories, reqAddCategory, reqUpdateCategory } from '../../api'
 import LinkButton from '../../components/LinkButton'
 import AddForm from './add-form'
+import UpdateForm from './update-form'
 
 export default function Category() {
   const [loading, setLoading] = useState(false)
@@ -18,9 +14,10 @@ export default function Category() {
   const [parentId, setParentId] = useState('0')
   const [parentName, setParentName] = useState('')
   const [showStatus, setShowStatus] = useState(0)
+  const [categoryId, setCategoryId] = useState()
 
   let form
-  let categoryUpdate = {}
+  let categoryName
 
   /* 获取分类列表 */
   const getCategories = async (reqId) => {
@@ -53,19 +50,15 @@ export default function Category() {
     setSubCategories([])
   }
 
-  /* 隐藏分类对话框 */
-  const handleCancel = () => {
-    setShowStatus(0)
-  }
-
   /* 增加分类对话框 */
   const showAdd = () => {
     setShowStatus(1)
   }
 
   /* 修改分类对话框 */
-  const showUpdate = (category) => {
-    categoryUpdate = category
+  const showUpdate = (c) => {
+    setCategoryId(c._id)
+    console.log(c._id)
     setShowStatus(2)
   }
 
@@ -73,8 +66,9 @@ export default function Category() {
     //获得数据
     const { parentId: formParentId, category: formCategoryName } =
       form.getFieldsValue()
-    setShowStatus(0)
+
     //重置表单
+    setShowStatus(0)
     form.resetFields()
 
     //添加数据
@@ -89,12 +83,25 @@ export default function Category() {
     }
   }
 
-  const updateCategory = () => {}
+  /* 更新分类 */
+  const updateCategory = async () => {
+    const { categoryName: formCategoryName } =
+      form.getFieldsValue()
+
+    setShowStatus(0)
+    form.resetFields()
+
+    const result = await reqUpdateCategory(categoryId, formCategoryName)
+    if (result.status === 200) {
+      getCategories()
+    }
+  }
 
   //数组中的值发生变化才会更新
   useEffect(() => {
     getCategories()
     console.log(parentName)
+    // eslint-disable-next-line
   }, [parentId, parentName])
 
   /*   useEffect(()=>{
@@ -131,7 +138,7 @@ export default function Category() {
       render: (category) => (
         //返回需要显示的界面标签
         <span>
-          <LinkButton onClick={showUpdate}>修改分类</LinkButton>
+          <LinkButton onClick={()=>showUpdate(category)}>修改分类</LinkButton>
           {parentId === '0' ? (
             <LinkButton onClick={() => showSubCategories(category)}>
               查看子分类
@@ -169,7 +176,12 @@ export default function Category() {
         visible={showStatus === 2}
         onOk={updateCategory}
         onCancel={() => setShowStatus(0)}
-      ></Modal>
+      >
+        <UpdateForm
+          categoryName={categoryName}
+          setForm={(f) => (form = f)}
+        ></UpdateForm>
+      </Modal>
     </Card>
   )
 }
