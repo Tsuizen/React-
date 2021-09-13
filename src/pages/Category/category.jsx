@@ -85,8 +85,7 @@ export default function Category() {
 
   /* 更新分类 */
   const updateCategory = async () => {
-    const { categoryName: formCategoryName } =
-      form.getFieldsValue()
+    const { categoryName: formCategoryName } = form.getFieldsValue()
 
     setShowStatus(0)
     form.resetFields()
@@ -100,13 +99,8 @@ export default function Category() {
   //数组中的值发生变化才会更新
   useEffect(() => {
     getCategories()
-    console.log(parentName)
     // eslint-disable-next-line
   }, [parentId, parentName])
-
-  /*   useEffect(()=>{
-    getCategories()
-  }, [parentId, parentName]) */
 
   //card左侧
   const title =
@@ -138,7 +132,7 @@ export default function Category() {
       render: (category) => (
         //返回需要显示的界面标签
         <span>
-          <LinkButton onClick={()=>showUpdate(category)}>修改分类</LinkButton>
+          <LinkButton onClick={() => showUpdate(category)}>修改分类</LinkButton>
           {parentId === '0' ? (
             <LinkButton onClick={() => showSubCategories(category)}>
               查看子分类

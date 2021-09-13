@@ -41,3 +41,28 @@ export const reqAddCategory = (categoryName, parentId) =>
 /* 更新分类 */
 export const reqUpdateCategory = (categoryId, categoryName) =>
   ajax(BASE + '/manage/category/update', { categoryId, categoryName }, 'POST')
+
+/* 获取商品分页列表 */
+export const reqProducts = (pageNum, pageSize) =>
+  ajax(BASE + '/manage/product/list', { pageNum, pageSize })
+
+/* 根据 ID/Name 搜索商品分页列表  */
+export const reqSearchProducts = ({
+  pageNum,
+  pageSize,
+  searchName,
+  searchType
+}) =>
+  ajax(BASE + '/manage/product/search', {
+    pageNum,
+    pageSize,
+    [searchType]: searchName
+  })
+
+/* 更新商品上架状态 */
+export const reqUpdateProductStatus = (productId, status) =>
+  ajax(BASE + '/manage/product/updateStatus', { productId, status }, 'POST')
+
+/* 跟据分类Id获取分类 */
+export const reqCategory = (categoryId) =>
+  ajax('/manage/category/info', { categoryId })

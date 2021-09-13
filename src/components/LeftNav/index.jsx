@@ -15,6 +15,10 @@ export default function LeftNav() {
   let path = location.pathname
   let openKey = null
 
+  if (path.indexOf('/product') === 0) {
+    path = '/product'
+  }
+  
   const getMenuList = (menuList) => {
     return menuList.map((item) => {
       if (!item.children) {
@@ -25,7 +29,7 @@ export default function LeftNav() {
         )
       } else {
         if (item.children.find((cItem) => path.indexOf(cItem.key) === 0)) {
-         openKey = item.key
+          openKey = item.key
         }
         return (
           <SubMenu key={item.key} icon={item.icon} title={item.title}>

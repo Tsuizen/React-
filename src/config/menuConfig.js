@@ -8,7 +8,7 @@ import {
   AreaChartOutlined,
   BarChartOutlined,
   PieChartOutlined,
-  LineChartOutlined
+  LineChartOutlined,
 } from '@ant-design/icons'
 
 const menuList = [
