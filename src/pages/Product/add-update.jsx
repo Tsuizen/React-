@@ -1,12 +1,13 @@
 import { React, useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import { Form, Card, Input, Cascader, Button } from 'antd'
+import { useHistory } from 'react-router'
+import { Form, Card, Input, Cascader, Button, message } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
 import LinkButton from '../../components/LinkButton'
 
 import TextArea from 'rc-textarea'
-import { reqCategories } from '../../api'
+import { reqAddOrUpdateProduct, reqCategories } from '../../api'
 
 const Item = Form.Item
 
@@ -14,6 +15,7 @@ export default function ProductAddUpdate(props) {
   const [options, setOptions] = useState([])
   const location = useLocation()
   const [form] = Form.useForm()
+  const history = useHistory()
 
   let product = location.state
   product = product || {}
@@ -22,6 +24,7 @@ export default function ProductAddUpdate(props) {
 
   // 级联列表显示的数组
   const categoryIds = []
+
   if (isUpdate) {
     if (pCategoryId === '0') {
       categoryIds.push(categoryId)
@@ -125,7 +128,41 @@ export default function ProductAddUpdate(props) {
     }
   }
 
-  const submit = () => {}
+  const submit = () => {
+    form
+      .validateFields()
+      .then(async (values) => {
+        const { name, desc, price, category } = values
+        console.log('@',values)
+        let pCategoryId = ''
+        let categoryId = ''
+      
+        if (category.length === 1) {
+          //一级级联
+          pCategoryId = '0'
+          categoryId = category[0]
+        } else {
+          pCategoryId = category[0]
+          categoryId = category[1]
+        }
+
+        const product_submit = { name, desc, price, pCategoryId, categoryId }
+
+        if (isUpdate) {
+          product_submit._id = product._id
+        }
+
+        const result = await reqAddOrUpdateProduct(product_submit)
+      
+        if (result.data.status === 0) {
+          message.success('保存成功')
+          history.goBack()
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
 
   useEffect(() => {
     getCategories('0')
@@ -139,6 +176,7 @@ export default function ProductAddUpdate(props) {
         <Item
           name="name"
           label="商品名称"
+          initialValue={product.name}
           {...formItemLayout}
           rules={[{ required: true }, { message: '商品名称必须输入' }]}
         >
@@ -146,6 +184,7 @@ export default function ProductAddUpdate(props) {
         </Item>
         <Item
           name="desc"
+          initialValue={product.desc}
           label="商品描述"
           {...formItemLayout}
           rules={[{ required: true }, { message: '商品描述必须输入' }]}
@@ -157,23 +196,15 @@ export default function ProductAddUpdate(props) {
           initialValue={product.price}
           label="商品价格"
           {...formItemLayout}
-          rules={[
-            { required: true },
-            { message: '商品价格必须输入' },
-            { validator: validatePrice }
-          ]}
+          rules={[{ required: true }, { validator: validatePrice }]}
         >
-          <Input
-            type="number"
-            placeholder="请输入商品价格"
-            addonAfter="元"
-          ></Input>
+          <Input type="number" placeholder="请输入商品价格" addonAfter="元" />
         </Item>
         <Item
           name="category"
           label="商品分类"
           {...formItemLayout}
-          rules={[{ required: true }, { message: '商品分类必须输入' }]}
+          rules={[{ required: true }]}
         >
           <Cascader options={options} loadData={loadData} />
         </Item>

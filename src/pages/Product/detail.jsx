@@ -26,14 +26,14 @@ export default function ProductDetail() {
       setCName1(cName1)
     } else {
       const results = await Promise.all([
+        reqCategory(pCategoryId),
         reqCategory(categoryId),
-        reqCategory(pCategoryId)
       ])
 
       const result1 = results[0]
       const result2 = results[1]
 
-      console.log(result1)
+      console.log('result1', result1)
       const cName1 = result1.data.data.name
       const cName2 = result2.data.data.name
 

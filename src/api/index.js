@@ -66,3 +66,6 @@ export const reqUpdateProductStatus = (productId, status) =>
 /* 跟据分类Id获取分类 */
 export const reqCategory = (categoryId) =>
   ajax('/manage/category/info', { categoryId })
+
+export const reqAddOrUpdateProduct = (product) =>
+  ajax('/manage/product/' + (product._id ? 'update' : 'add'), product, 'post')
