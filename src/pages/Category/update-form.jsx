@@ -1,14 +1,14 @@
 import React from 'react'
 import { Form, Input } from 'antd'
 import PropTypes from 'prop-types'
-import { useForm } from 'antd/lib/form/Form'
+
 
 const Item = Form.Item
 
 function UpdateForm(props) {
   const [form] = Form.useForm()
-  const {categoryName} = props
-
+  const { categoryName } = props
+  console.log('props', props)
   props.setForm(form)
 
   return (
@@ -20,7 +20,7 @@ function UpdateForm(props) {
   )
 }
 
-useForm.propTypes = {
+Form.useForm.propTypes = {
   categories: PropTypes.array.isRequired,
   _id: PropTypes.string.isRequired
 }

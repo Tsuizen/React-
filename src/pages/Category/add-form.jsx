@@ -13,12 +13,7 @@ function AddForm(props) {
 
   return (
     <Form form={form}>
-      <Item
-        label="所属分类"
-        rules={[]}
-        name={'parentId'}
-        initialValue={parentId}
-      >
+      <Item label="所属分类" rules={[]} name="parentId" initialValue={parentId}>
         <Select>
           <Option key="0" value="0">
             一级分类
@@ -30,7 +25,7 @@ function AddForm(props) {
           ))}
         </Select>
       </Item>
-      <Item label="分类名称" name={'category'} initialValue={''}>
+      <Item label="分类名称" name="category" initialValue={''}>
         <Input placeholder="请输入分类名称"></Input>
       </Item>
     </Form>

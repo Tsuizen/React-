@@ -15,9 +15,9 @@ export default function Category() {
   const [parentName, setParentName] = useState('')
   const [showStatus, setShowStatus] = useState(0)
   const [categoryId, setCategoryId] = useState()
+  const [category, setCategory] = useState({})
 
   let form
-  let categoryName
 
   /* 获取分类列表 */
   const getCategories = async (reqId) => {
@@ -56,9 +56,9 @@ export default function Category() {
   }
 
   /* 修改分类对话框 */
-  const showUpdate = (c) => {
+  function showUpdate(c) {
     setCategoryId(c._id)
-    console.log(c._id)
+    setCategory(c)
     setShowStatus(2)
   }
 
@@ -154,10 +154,13 @@ export default function Category() {
         loading={loading}
       />
       <Modal
+        destroyOnClose
         title="添加分类"
         visible={showStatus === 1}
         onOk={addCategory}
-        onCancel={() => setShowStatus(0)}
+        onCancel={() => {
+          setShowStatus(0)
+        }}
       >
         <AddForm
           categories={categories}
@@ -166,13 +169,16 @@ export default function Category() {
         ></AddForm>
       </Modal>
       <Modal
+        destroyOnClose
         title="更新分类"
         visible={showStatus === 2}
         onOk={updateCategory}
-        onCancel={() => setShowStatus(0)}
+        onCancel={() => {
+          setShowStatus(0)
+        }}
       >
         <UpdateForm
-          categoryName={categoryName}
+          categoryName={category.name}
           setForm={(f) => (form = f)}
         ></UpdateForm>
       </Modal>

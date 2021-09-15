@@ -1,4 +1,5 @@
 import { React, useState, useEffect } from 'react'
+import { useHistory, useLocation } from 'react-router-dom'
 import { Card, List } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
@@ -6,7 +7,6 @@ import { reqCategory } from '../../api'
 import LinkButton from '../../components/LinkButton'
 import './product.less'
 import { BASE_IMG_PATH } from '../../utils/constants'
-import { useHistory, useLocation } from 'react-router-dom'
 
 export default function ProductDetail() {
   const [cName1, setCName1] = useState('') //一级分类名称
@@ -17,13 +17,10 @@ export default function ProductDetail() {
 
   const { name, desc, price, imgs, detail } = location.state
 
-
   const getCategoryName = async () => {
-  
     const { categoryId, pCategoryId } = location.state
-  
+
     if (pCategoryId === '0') {
-      
       const result = reqCategory(categoryId)
       const cName1 = result.data.name
       setCName1(cName1)
@@ -33,7 +30,6 @@ export default function ProductDetail() {
         reqCategory(pCategoryId)
       ])
 
-    
       const result1 = results[0]
       const result2 = results[1]
 
@@ -90,7 +86,12 @@ export default function ProductDetail() {
           <span className="left">商品图片:</span>
           <span>
             {imgs.map((img) => (
-              <img src={BASE_IMG_PATH + img} alt="img" key={img} style={imgStyle} />
+              <img
+                src={BASE_IMG_PATH + img}
+                alt="img"
+                key={img}
+                style={imgStyle}
+              />
             ))}
           </span>
         </List.Item>

@@ -1,22 +1,35 @@
-import { React, useState,  useForm } from 'react'
+import { React, useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Form, Card, Input, Cascader, Button } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
 import LinkButton from '../../components/LinkButton'
 
 import TextArea from 'rc-textarea'
+import { reqCategories } from '../../api'
 
 const Item = Form.Item
 
 export default function ProductAddUpdate(props) {
   const [options, setOptions] = useState([])
+  const location = useLocation()
+  const [form] = Form.useForm()
 
-  const [form] = useForm()
-
-  let isUpdate
-  let product
+  let product = location.state
+  product = product || {}
+  let isUpdate = !!product
   let { categoryId, pCategoryId } = product
-  let loadData
+
+  // 级联列表显示的数组
+  const categoryIds = []
+  if (isUpdate) {
+    if (pCategoryId === '0') {
+      categoryIds.push(categoryId)
+    } else {
+      categoryIds.push(pCategoryId)
+      categoryIds.push(categoryId)
+    }
+  }
 
   const title = (
     <span>
@@ -32,12 +45,99 @@ export default function ProductAddUpdate(props) {
     wrapperCol: { span: 8 }
   }
 
+  /*
+    选择某个分类项时的回调
+    加载对应的二级分类显示
+  */
+  const loadData = async (selectedOptions) => {
+    console.log(selectedOptions)
+    const targetOption = selectedOptions[selectedOptions.length - 1]
+    console.log('target', targetOption)
+    targetOption.loading = true
+    const subCategories = await getCategories(targetOption.value)
+    targetOption.loadding = false
+
+    console.log(subCategories)
+    if (subCategories && subCategories.length > 0) {
+      // 有子分类
+      // 生成一个二级的 options
+      const cOptions = subCategories.map((c) => ({
+        value: c._id,
+        label: c.name,
+        isLeaf: true
+      }))
+
+      // 添加为对应的 option 的 children(子 options)
+      targetOption.children = cOptions
+    } else {
+      // 没有子分类
+      targetOption.isLeaf = true
+      console.log('没有子分类')
+    }
+    setOptions([...options])
+  }
+
+  const getCategories = async (parentId) => {
+    const result = await reqCategories(parentId)
+    if (result.status === 200) {
+      const categories = result.data.data
+      if (parentId === '0') {
+        initOptions(categories)
+      } else {
+        return categories
+      }
+    }
+  }
+
+  const initOptions = async (cateogoies) => {
+    const optionList = cateogoies.map((c) => ({
+      value: c._id,
+      label: c.name,
+      isLeaf: false
+    }))
+
+    if (isUpdate && product.pCategoryId !== '0') {
+      const subCategories = await getCategories(product.pCategoryId)
+
+      if (subCategories && subCategories.length > 0) {
+        const cOptions = subCategories.map((c) => ({
+          value: c._id,
+          label: c.name,
+          isLeaf: true
+        }))
+
+        const targetOption = optionList.find(
+          (option) => option.value === product.pCategoryId
+        )
+
+        targetOption.children = cOptions
+      }
+    }
+    setOptions(optionList)
+  }
+
+  const validatePrice = (rule, value, callback) => {
+    value = value * 1
+    if (value > 0) {
+      callback()
+    } else {
+      callback('价格必须是大于0的数值')
+    }
+  }
+
   const submit = () => {}
+
+  useEffect(() => {
+    getCategories('0')
+    console.log(product.price)
+    // eslint-disable-next-line
+  }, [])
 
   return (
     <Card tilte={title}>
       <Form form={form}>
         <Item
+          name="name"
           label="商品名称"
           {...formItemLayout}
           rules={[{ required: true }, { message: '商品名称必须输入' }]}
@@ -45,16 +145,23 @@ export default function ProductAddUpdate(props) {
           <Input placeholder="请输入商品名称" />
         </Item>
         <Item
+          name="desc"
           label="商品描述"
           {...formItemLayout}
           rules={[{ required: true }, { message: '商品描述必须输入' }]}
         >
-          <TextArea placeholder="请输入商品描述" autosize />
+          <TextArea placeholder="请输入商品描述" />
         </Item>
         <Item
+          name="price"
+          initialValue={product.price}
           label="商品价格"
           {...formItemLayout}
-          rules={[{ required: true }, { message: '商品价格必须输入' }]}
+          rules={[
+            { required: true },
+            { message: '商品价格必须输入' },
+            { validator: validatePrice }
+          ]}
         >
           <Input
             type="number"
@@ -63,6 +170,7 @@ export default function ProductAddUpdate(props) {
           ></Input>
         </Item>
         <Item
+          name="category"
           label="商品分类"
           {...formItemLayout}
           rules={[{ required: true }, { message: '商品分类必须输入' }]}
