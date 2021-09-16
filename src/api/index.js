@@ -69,3 +69,8 @@ export const reqCategory = (categoryId) =>
 
 export const reqAddOrUpdateProduct = (product) =>
   ajax('/manage/product/' + (product._id ? 'update' : 'add'), product, 'post')
+
+/* 删除图片 */
+export const reqDeleteImg = (name) => 
+  ajax('/manage/img/delete', { name }, 'post')
+

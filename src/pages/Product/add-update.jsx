@@ -1,27 +1,30 @@
-import { React, useState, useEffect } from 'react'
+import { React, useState, useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useHistory } from 'react-router'
 import { Form, Card, Input, Cascader, Button, message } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
 import LinkButton from '../../components/LinkButton'
-
-import TextArea from 'rc-textarea'
+import PicturesWall from './pictures-wall'
+import RichTextEditor from './rich-text-editor'
 import { reqAddOrUpdateProduct, reqCategories } from '../../api'
 
 const Item = Form.Item
+const { TextArea } = Input
 
-export default function ProductAddUpdate(props) {
+export default function ProductAddUpdate() {
   const [options, setOptions] = useState([])
   const location = useLocation()
   const [form] = Form.useForm()
   const history = useHistory()
 
+  const pw = useRef()
+  const editor = useRef()
   let product = location.state
   product = product || {}
   let isUpdate = !!product
   let { categoryId, pCategoryId } = product
-
+  console.log('#')
   // 级联列表显示的数组
   const categoryIds = []
 
@@ -53,14 +56,11 @@ export default function ProductAddUpdate(props) {
     加载对应的二级分类显示
   */
   const loadData = async (selectedOptions) => {
-    console.log(selectedOptions)
     const targetOption = selectedOptions[selectedOptions.length - 1]
-    console.log('target', targetOption)
     targetOption.loading = true
     const subCategories = await getCategories(targetOption.value)
     targetOption.loadding = false
 
-    console.log(subCategories)
     if (subCategories && subCategories.length > 0) {
       // 有子分类
       // 生成一个二级的 options
@@ -119,12 +119,12 @@ export default function ProductAddUpdate(props) {
     setOptions(optionList)
   }
 
-  const validatePrice = (rule, value, callback) => {
+  const validatePrice = (_, value) => {
     value = value * 1
     if (value > 0) {
-      callback()
+      return Promise.resolve()
     } else {
-      callback('价格必须是大于0的数值')
+      return Promise.reject('价格必须是大于0的数值')
     }
   }
 
@@ -133,10 +133,12 @@ export default function ProductAddUpdate(props) {
       .validateFields()
       .then(async (values) => {
         const { name, desc, price, category } = values
-        console.log('@',values)
+        console.log(pw)
+        const imgs = pw.current.getImgs()
+        const detail = editor.current.getDetail()
         let pCategoryId = ''
         let categoryId = ''
-      
+
         if (category.length === 1) {
           //一级级联
           pCategoryId = '0'
@@ -146,14 +148,22 @@ export default function ProductAddUpdate(props) {
           categoryId = category[1]
         }
 
-        const product_submit = { name, desc, price, pCategoryId, categoryId }
+        const product_submit = {
+          name,
+          desc,
+          price,
+          pCategoryId,
+          categoryId,
+          detail,
+          imgs
+        }
 
         if (isUpdate) {
           product_submit._id = product._id
         }
 
         const result = await reqAddOrUpdateProduct(product_submit)
-      
+
         if (result.data.status === 0) {
           message.success('保存成功')
           history.goBack()
@@ -166,8 +176,8 @@ export default function ProductAddUpdate(props) {
 
   useEffect(() => {
     getCategories('0')
-    console.log(product.price)
-    // eslint-disable-next-line
+
+   // eslint-disable-next-line
   }, [])
 
   return (
@@ -178,7 +188,7 @@ export default function ProductAddUpdate(props) {
           label="商品名称"
           initialValue={product.name}
           {...formItemLayout}
-          rules={[{ required: true }, { message: '商品名称必须输入' }]}
+          rules={[{ required: true, message: '商品名称必须输入' }]}
         >
           <Input placeholder="请输入商品名称" />
         </Item>
@@ -187,7 +197,7 @@ export default function ProductAddUpdate(props) {
           initialValue={product.desc}
           label="商品描述"
           {...formItemLayout}
-          rules={[{ required: true }, { message: '商品描述必须输入' }]}
+          rules={[{ required: true, message: '商品描述必须输入' }]}
         >
           <TextArea placeholder="请输入商品描述" />
         </Item>
@@ -196,7 +206,13 @@ export default function ProductAddUpdate(props) {
           initialValue={product.price}
           label="商品价格"
           {...formItemLayout}
-          rules={[{ required: true }, { validator: validatePrice }]}
+          rules={[
+            {
+              required: true,
+              validator: validatePrice,
+              message: '必须输入价格'
+            }
+          ]}
         >
           <Input type="number" placeholder="请输入商品价格" addonAfter="元" />
         </Item>
@@ -204,16 +220,16 @@ export default function ProductAddUpdate(props) {
           name="category"
           label="商品分类"
           {...formItemLayout}
-          rules={[{ required: true }]}
+          rules={[{ required: true, message: '商品分类必须输入' }]}
         >
           <Cascader options={options} loadData={loadData} />
         </Item>
-        <Item label="商品图片" {...formItemLayout}></Item>
-        <Item
-          label="商品详情"
-          labelCol={{ span: 2 }}
-          wrapperCol={{ span: 20 }}
-        ></Item>
+        <Item label="商品图片" {...formItemLayout}>
+          <PicturesWall ref={pw} imgs={product.imgs} />
+        </Item>
+        <Item label="商品详情" labelCol={{ span: 2 }} wrapperCol={{ span: 20 }}>
+          <RichTextEditor ref={editor} detail={product.detail} />
+        </Item>
         <Button type="primary" onClick={submit}>
           提交
         </Button>

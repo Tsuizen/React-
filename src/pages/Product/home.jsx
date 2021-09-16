@@ -18,7 +18,7 @@ export default function ProductHome() {
   const [searchType, setSearchType] = useState('productName') //搜索类型
   const [searchName, setSearchName] = useState('') //搜索关键字
   const [loding, setLoding] = useState(false) //加载状态
-
+ 
   let curPageNum = 1
 
   let history = useHistory()
@@ -45,8 +45,6 @@ export default function ProductHome() {
       setTotal(total)
       setProducts(list)
     }
-
-    console.log('products', products)
   }
 
   const updateProductStatus = async (productId, status) => {
@@ -132,9 +130,7 @@ export default function ProductHome() {
       width: 100,
       render: (product) => (
         <span>
-          <LinkButton
-            onClick={() => history.push('/product/detail', product)}
-          >
+          <LinkButton onClick={() => history.push('/product/detail', product)}>
             详情
           </LinkButton>
           &nbsp;&nbsp;&nbsp;
@@ -150,7 +146,6 @@ export default function ProductHome() {
 
   useEffect(() => {
     getProducts(1)
-    console.log(total)
     // eslint-disable-next-line
   }, [])
 
