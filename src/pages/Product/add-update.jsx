@@ -1,4 +1,4 @@
-import { React, useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useHistory } from 'react-router'
 import { Form, Card, Input, Cascader, Button, message } from 'antd'
@@ -14,6 +14,7 @@ const { TextArea } = Input
 
 export default function ProductAddUpdate() {
   const [options, setOptions] = useState([])
+
   const location = useLocation()
   const [form] = Form.useForm()
   const history = useHistory()
@@ -24,7 +25,7 @@ export default function ProductAddUpdate() {
   product = product || {}
   let isUpdate = !!product
   let { categoryId, pCategoryId } = product
-  console.log('#')
+
   // 级联列表显示的数组
   const categoryIds = []
 
@@ -133,7 +134,6 @@ export default function ProductAddUpdate() {
       .validateFields()
       .then(async (values) => {
         const { name, desc, price, category } = values
-        console.log(pw)
         const imgs = pw.current.getImgs()
         const detail = editor.current.getDetail()
         let pCategoryId = ''
@@ -176,8 +176,7 @@ export default function ProductAddUpdate() {
 
   useEffect(() => {
     getCategories('0')
-
-   // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [])
 
   return (

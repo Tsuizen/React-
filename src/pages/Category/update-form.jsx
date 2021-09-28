@@ -8,7 +8,6 @@ const Item = Form.Item
 function UpdateForm(props) {
   const [form] = Form.useForm()
   const { categoryName } = props
-  console.log('props', props)
   props.setForm(form)
 
   return (
