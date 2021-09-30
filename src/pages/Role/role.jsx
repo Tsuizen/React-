@@ -24,12 +24,11 @@ export default function Role() {
     }
   }
 
-  const onRow = (role) => {
-    console.log(role)
+  const onRow = (record) => {
     return {
       onClick: (event) => {
-        setRole(role)
-        setSelectedRowKeys(role._id)
+        setRole(record)
+        setSelectedRowKeys([record._id])
       }
     }
   }

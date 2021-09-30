@@ -24,7 +24,7 @@ export const reqWeather = () => {
         const weather = response.lives[0].weather
         resolve(weather)
       } else {
-        alert('获取天气信息失败')
+        console.log('获取天气信息失败')
       }
     })
   })
