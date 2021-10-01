@@ -21,6 +21,7 @@ function AuthForm(props, ref) {
     getMenus: () => checkedKeys
   }))
 
+  // eslint-disable-next-line
   const getMenus = () => checkedKeys
 
   const getTreeNodes = (menuList) => {
