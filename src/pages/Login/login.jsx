@@ -30,7 +30,7 @@ export default function Login() {
         message.success('登陆成功')
 
         const user = result.data
-        memoryUtils.user = user //保存在内存中
+        memoryUtils.user = user //保存在内存
         storageUtils.saveUser(user) //保存在local中
 
         history.replace('/')

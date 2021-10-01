@@ -7,20 +7,20 @@ import { formateDate } from '../../utils/dateUtils'
 import LinkButton from '../../components/LinkButton'
 import UserForm from './user-form'
 
+let form
+
 export default function User() {
   const [isShow, setIsShow] = useState(false)
   const [users, setUsers] = useState([])
   const [roles, setRoles] = useState([])
   const [user, setUser] = useState({})
-  let form
-
+  console.log('test')
   const getUsers = async () => {
     const results = await reqUsers()
     if (results.status === 200) {
-      const { users, roles } = results.data.data
-
-      setUsers(users)
-      setRoles(roles)
+      const { users: users_tmp, roles: roles_tmp } = results.data.data
+      setUsers(users_tmp)
+      setRoles(roles_tmp)
     }
   }
 
@@ -65,7 +65,7 @@ export default function User() {
   useEffect(() => {
     getUsers()
     // eslint-disable-next-line
-  }, [])
+  }, [user])
 
   const columns = [
     {

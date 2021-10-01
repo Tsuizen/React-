@@ -16,8 +16,9 @@ export default function Header() {
   const [sysTime, setSysTime] = useState(formateDate(Date.now()))
   const history = useHistory()
   const location = useLocation()
-  let path = location.pathname
+  const username = memoryUtils.user.username
 
+  let path = location.pathname
   //异步请求获取天气信息
   const getWeather = async () => {
     const weather = await reqWeather()
@@ -70,7 +71,7 @@ export default function Header() {
   return (
     <div className="header">
       <div className="header-top">
-        <span>欢迎，admin</span>
+        <span>欢迎，{username}</span>
         <LinkButton onClick={logout}>退出</LinkButton>
       </div>
       <div className="header-bottom">

@@ -17,6 +17,12 @@ export default function Role() {
 
   let form
 
+  const [count, setCount] = useState(0)
+  const addCount = () => {
+    setCount(count + 1)
+    console.log(count)
+  }
+
   const getRoles = async () => {
     const result = await reqRoles()
     if (result.status === 200) {
@@ -117,6 +123,7 @@ export default function Role() {
 
   return (
     <Card title={title}>
+      <button onClick={() => addCount()}>add</button>
       <Table
         bordered
         rowKey="_id"
