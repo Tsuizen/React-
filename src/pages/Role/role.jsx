@@ -12,16 +12,10 @@ export default function Role() {
   const [role, setRole] = useState({}) //选中的role
   const [isShowAdd, setIsShowAdd] = useState(false) //是否添加显示界面
   const [isShowAuth, setIsShowAuth] = useState(false) //是否显示设置权限界面
-  const [selectedRowKeys, setSelectedRowKeys] = useState([])
+
   const authRef = useRef()
 
   let form
-
-  const [count, setCount] = useState(0)
-  const addCount = () => {
-    setCount(count + 1)
-    console.log(count)
-  }
 
   const getRoles = async () => {
     const result = await reqRoles()
@@ -34,7 +28,6 @@ export default function Role() {
     return {
       onClick: (event) => {
         setRole(record)
-        setSelectedRowKeys([record._id])
       }
     }
   }
@@ -107,30 +100,21 @@ export default function Role() {
     // eslint-disable-next-line
   }, [])
 
-  const onSelectChange = (selectedRowKeys) => {
-    setSelectedRowKeys(selectedRowKeys)
-    for (let i in roles) {
-      if (roles[i]._id === selectedRowKeys[0]) {
-        setRole(roles[i])
-      }
-    }
-  }
-
-  const rowSelection = {
-    onChange: onSelectChange,
-    selectedRowKeys
-  }
-
   return (
     <Card title={title}>
-      <button onClick={() => addCount()}>add</button>
       <Table
         bordered
         rowKey="_id"
         dataSource={roles}
         columns={columns}
         pagination={{ defaultPageSize: 5 }}
-        rowSelection={{ type: 'radio', ...rowSelection }}
+        rowSelection={{
+          type: 'radio',
+          selectedRowKeys: [role._id],
+          onSelect: (role) => {
+            setRole(role)
+          }
+        }}
         onRow={onRow}
       />
       <Modal

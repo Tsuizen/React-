@@ -22,7 +22,7 @@ export default function LeftNav() {
   }
 
   const hasAuth = (item) => {
-    // 1. 如果菜单项标识为公开
+    // 1. 如果菜单项标识为公开  
     // 2. 如果当前用户是 admin
     // 3. 如果菜单项的 key 在用户的 menus 中
     const key = item.key

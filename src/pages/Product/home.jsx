@@ -18,15 +18,13 @@ export default function ProductHome() {
   const [searchType, setSearchType] = useState('productName') //搜索类型
   const [searchName, setSearchName] = useState('') //搜索关键字
   const [loding, setLoding] = useState(false) //加载状态
- 
-  let curPageNum = 1
+  const [curPageNum, setCurPageNum] = useState(1) //
 
   let history = useHistory()
 
   const getProducts = async (pageNum) => {
     let result
-    curPageNum = pageNum
-
+    setCurPageNum(pageNum)
     setLoding(true)
     if (searchName) {
       result = await reqSearchProducts({
@@ -161,7 +159,8 @@ export default function ProductHome() {
           total,
           defaultPageSize: PAGE_SIZE,
           showQuickJumper: true,
-          onChange: getProducts
+          onChange: getProducts,
+          current: curPageNum
         }}
       />
     </Card>
