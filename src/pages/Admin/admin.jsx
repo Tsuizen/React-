@@ -1,8 +1,8 @@
 import React from 'react'
 import { Redirect, Switch, Route } from 'react-router'
 import { Layout } from 'antd'
+import { useSelector } from 'react-redux'
 
-import memoryUtils from '../../utils/memoryUtils'
 import Header from '../../components/Header'
 import LeftNav from '../../components/LeftNav'
 import Category from '../Category/category'
@@ -17,10 +17,12 @@ import User from '../User/user'
 const { Footer, Sider, Content } = Layout
 
 export default function Admin() {
-  const user = memoryUtils.user
+  const user = useSelector((state) => state.user )
+
   //如果内存中没有user=>当前没有登陆
   if (!user) {
     //自动跳转到登陆
+    console.log('#',user)
     return <Redirect to="/login" />
   }
   return (

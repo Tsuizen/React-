@@ -63,7 +63,7 @@ function PicturesWall(props, ref) {
     } else if (file.status === 'removed') {
       const result = await reqDeleteImg(file.name)
       console.log(result)
-      if (result.status === 200) {
+      if (result.status === 0) {
         message.success('删除图片成功')
       } else {
         message.error('删除图片失败')

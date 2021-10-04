@@ -83,8 +83,8 @@ export default function ProductAddUpdate() {
 
   const getCategories = async (parentId) => {
     const result = await reqCategories(parentId)
-    if (result.status === 200) {
-      const categories = result.data.data
+    if (result.status === 0) {
+      const categories = result.data
       if (parentId === '0') {
         initOptions(categories)
       } else {
@@ -164,7 +164,7 @@ export default function ProductAddUpdate() {
 
         const result = await reqAddOrUpdateProduct(product_submit)
 
-        if (result.data.status === 0) {
+        if (result.status === 0) {
           message.success('保存成功')
           history.goBack()
         }
