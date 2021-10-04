@@ -14,7 +14,7 @@ export default function User() {
   const [users, setUsers] = useState([])
   const [roles, setRoles] = useState([])
   const [user, setUser] = useState({})
-  console.log('test')
+
   const getUsers = async () => {
     const results = await reqUsers()
     if (results.status === 0) {

@@ -1,6 +1,6 @@
 import { Modal } from 'antd'
 import React, { useState, useEffect } from 'react'
-// import { useHistory, useLocation } from 'react-router'
+import { useHistory} from 'react-router'
 import LinkButton from '../LinkButton'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -16,7 +16,7 @@ import './index.less'
 export default function Header() {
   const [weather, setWeather] = useState()
   const [sysTime, setSysTime] = useState(formateDate(Date.now()))
-  // const history = useHistory()
+  const history = useHistory()
   // const location = useLocation()
 
   const user = useSelector((state) => state.user)
@@ -63,6 +63,7 @@ export default function Header() {
       content: '确定退出吗？',
       onOk: () => {
         dispatch(logout())
+        history.replace('/login')
       },
       onCancel: () => {
         console.log('cancel')

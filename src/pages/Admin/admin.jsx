@@ -13,16 +13,14 @@ import Pie from '../Charts/pie'
 import Line from '../Charts/line'
 import Role from '../Role/role'
 import User from '../User/user'
+// import storageUtils from '../../utils/storageUtils'
 
 const { Footer, Sider, Content } = Layout
 
 export default function Admin() {
-  const user = useSelector((state) => state.user )
-
+  const user = useSelector((state) => state.user)
   //如果内存中没有user=>当前没有登陆
-  if (!user) {
-    //自动跳转到登陆
-    console.log('#',user)
+  if (!user._id) {
     return <Redirect to="/login" />
   }
   return (

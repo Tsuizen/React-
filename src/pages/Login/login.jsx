@@ -1,6 +1,6 @@
 import React from 'react'
-import { Redirect, useHistory } from 'react-router-dom'
-import { Form, Input, Button, message } from 'antd'
+import { Redirect } from 'react-router'
+import { Form, Input, Button } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -8,18 +8,18 @@ import './index.less'
 import logo from '../../assets/images/logo.png'
 
 import { login } from '../../redux/action'
+// import storageUtils from '../../utils/storageUtils'
 
 /* 登陆路由组件 */
 export default function Login() {
-  const history = useHistory()
-
   const dispatch = useDispatch()
 
-  //如果用户已经登陆
-  // const user = useSelector((state) => ({ user: state.user }))
-  // if (user) {
-  //   return <Redirect to="/" />
-  // }
+  // 如果用户已经登陆
+  const user = useSelector((state) => state.user)
+
+  if (user._id) {
+    return <Redirect to="/" />
+  }
 
   //提交ajax请求
   const onFinish = async (values, err) => {
@@ -43,10 +43,10 @@ export default function Login() {
     // } catch {
     //   console.log('请求失败', err)
     // }
-   
+
     if (!err) {
       dispatch(login(username, password))
-      history.replace('/')
+      // history.replace('/')
     }
   }
 
