@@ -1,20 +1,22 @@
 import React from 'react'
-import { Redirect, useHistory } from 'react-router-dom'
-import { Form, Input, Button, message } from 'antd'
+import { Redirect } from 'react-router'
+import { Form, Input, Button } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
+import { useDispatch, useSelector } from 'react-redux'
 
 import './index.less'
 import logo from '../../assets/images/logo.png'
-import { reqLogin } from '../../api'
-import memoryUtils from '../../utils/memoryUtils'
-import storageUtils from '../../utils/storageUtils'
+
+import { login } from '../../redux/action'
+// import storageUtils from '../../utils/storageUtils'
 
 /* 登陆路由组件 */
 export default function Login() {
-  const history = useHistory()
+  const dispatch = useDispatch()
 
-  //如果用户已经登陆
-  const user = memoryUtils.user
+  // 如果用户已经登陆
+  const user = useSelector((state) => state.user)
+
   if (user._id) {
     return <Redirect to="/" />
   }
@@ -22,24 +24,29 @@ export default function Login() {
   //提交ajax请求
   const onFinish = async (values, err) => {
     const { username, password } = values
-    try {
-      const response = await reqLogin(username, password)
-      const result = response.data
+    // try {
+    //   const response = await reqLogin(username, password)
+    //   const result = response.data
 
-      if (result.status === 0) {
-        message.success('登陆成功')
+    //   if (result.status === 0) {
+    //     message.success('登陆成功')
 
-        const user = result.data
-        memoryUtils.user = user //保存在内存
-        storageUtils.saveUser(user) //保存在local中
+    //     const user = result.data
+    //     user = user //保存在内存
+    //     storageUtils.saveUser(user) //保存在local中
 
-        history.replace('/')
-        //跳转到管理界面
-      } else {
-        message.error(result.msg)
-      }
-    } catch {
-      console.log('请求失败', err)
+    //     history.replace('/')
+    //     //跳转到管理界面
+    //   } else {
+    //     message.error(result.msg)
+    //   }
+    // } catch {
+    //   console.log('请求失败', err)
+    // }
+
+    if (!err) {
+      dispatch(login(username, password))
+      // history.replace('/')
     }
   }
 

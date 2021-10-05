@@ -16,10 +16,10 @@ export default async function ajax(url, data = {}, type = 'GET') {
       response = await axios.get(url, {
         params: data //指定请求参数
       })
-    } else {    
+    } else {
       response = await axios.post(url, data)
     }
-    return response
+    return response.data
   } catch (error) {
     message.error('error')
   }

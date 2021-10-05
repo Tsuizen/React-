@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Button, Table, Card, Modal, message } from 'antd'
+import { useSelector, useDispatch } from 'react-redux'
 
 import { formateDate } from '../../utils/dateUtils'
 import { reqAddRole, reqRoles, reqUpdateRole } from '../../api'
 import AddForm from './add-form'
 import AuthForm from './auth-form'
-import memoryUtils from '../../utils/memoryUtils'
+import { logout } from '../../redux/action'
 
 export default function Role() {
   const [roles, setRoles] = useState([]) //所有角色的列表
@@ -13,14 +14,18 @@ export default function Role() {
   const [isShowAdd, setIsShowAdd] = useState(false) //是否添加显示界面
   const [isShowAuth, setIsShowAuth] = useState(false) //是否显示设置权限界面
 
+  const user = useSelector((state) => state.user)
+
+  const dispatch = useDispatch()
+
   const authRef = useRef()
 
   let form
 
   const getRoles = async () => {
     const result = await reqRoles()
-    if (result.status === 200) {
-      setRoles(result.data.data)
+    if (result.status === 0) {
+      setRoles(result.data)
     }
   }
 
@@ -38,7 +43,7 @@ export default function Role() {
     setIsShowAdd(false)
 
     const result = await reqAddRole(roleName)
-    if (result.status === 200) {
+    if (result.status === 0) {
       message.success('添加成功')
       getRoles()
     }
@@ -49,10 +54,13 @@ export default function Role() {
     const menus = authRef.current.getMenus()
     role.menus = menus
     role.auth_time = Date.now()
-    role.auth_name = memoryUtils.user.username
+    role.auth_name = user.username
 
     const result = await reqUpdateRole(role)
-    if (result.status === 200) {
+    if (result.status === 0) {
+      if (role._id === user.role_id) {
+        dispatch(logout())
+      }
       message.success('设置角色权限成功')
       setRoles([...roles])
     }

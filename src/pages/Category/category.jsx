@@ -25,8 +25,8 @@ export default function Category() {
     reqId = reqId || parentId
     const result = await reqCategories(reqId)
     setLoading(false)
-    if (result.status === 200) {
-      const categories = result.data.data
+    if (result.status === 0) {
+      const categories = result.data
       if (reqId === '0') {
         setCategories(categories)
       } else {
@@ -74,7 +74,7 @@ export default function Category() {
     //添加数据
     const result = await reqAddCategory(formCategoryName, formParentId)
     console.log(result.status)
-    if (result.status === 200) {
+    if (result.status === 0) {
       if (parentId === formParentId) {
         getCategories()
       } else if (parentId === '0') {
@@ -91,7 +91,7 @@ export default function Category() {
     form.resetFields()
 
     const result = await reqUpdateCategory(categoryId, formCategoryName)
-    if (result.status === 200) {
+    if (result.status === 0) {
       getCategories()
     }
   }

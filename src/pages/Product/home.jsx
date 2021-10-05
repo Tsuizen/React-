@@ -38,8 +38,8 @@ export default function ProductHome() {
     }
     setLoding(false)
 
-    if (result.status === 200) {
-      let { total, list } = result.data.data
+    if (result.status === 0) {
+      let { total, list } = result.data
       setTotal(total)
       setProducts(list)
     }
@@ -48,7 +48,7 @@ export default function ProductHome() {
   const updateProductStatus = async (productId, status) => {
     const result = await reqUpdateProductStatus(productId, status)
 
-    if (result.status === 200) {
+    if (result.status === 0) {
       message.success('更新成功')
       getProducts(curPageNum || 1)
     }

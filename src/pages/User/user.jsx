@@ -14,11 +14,11 @@ export default function User() {
   const [users, setUsers] = useState([])
   const [roles, setRoles] = useState([])
   const [user, setUser] = useState({})
-  console.log('test')
+
   const getUsers = async () => {
     const results = await reqUsers()
-    if (results.status === 200) {
-      const { users: users_tmp, roles: roles_tmp } = results.data.data
+    if (results.status === 0) {
+      const { users: users_tmp, roles: roles_tmp } = results.data
       setUsers(users_tmp)
       setRoles(roles_tmp)
     }
@@ -39,7 +39,7 @@ export default function User() {
       content: `确定删除${user.username}吗`,
       onOk: async () => {
         const result = await reqDeleteUser(user._id)
-        if (result.status === 200) {
+        if (result.status === 0) {
           message.success('删除成功')
           getUsers()
         }
@@ -57,7 +57,7 @@ export default function User() {
     }
 
     const result = await reqAddOrUpdateUser(user_tmp)
-    if (result.status === 200) {
+    if (result.status === 0) {
       getUsers()
     }
   }

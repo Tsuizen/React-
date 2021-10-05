@@ -34,8 +34,8 @@ export default function ProductDetail() {
       const result2 = results[1]
 
       console.log('result1', result1)
-      const cName1 = result1.data.data.name
-      const cName2 = result2.data.data.name
+      const cName1 = result1.data.name
+      const cName2 = result2.data.name
 
       setCName1(cName1)
       setCName2(cName2)

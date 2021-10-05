@@ -5,7 +5,8 @@ import './index.less'
 import logo from '../../assets/images/logo.png'
 import menuList from '../../config/menuConfig.js'
 import { Link, useLocation } from 'react-router-dom'
-import memoryUtils from '../../utils/memoryUtils'
+// import memoryUtils from '../../utils/memoryUtils'
+import { useSelector } from 'react-redux'
 
 const { SubMenu } = Menu
 
@@ -15,23 +16,20 @@ export default function LeftNav() {
   const location = useLocation()
   let path = location.pathname
   let openKey = null //默认打开的页
-  let menuSet = new Set(memoryUtils.user.role.menus || [])
+  const user = useSelector((state) => state.user)
+  let menuSet = new Set(user.role.menus || [])
 
   if (path.indexOf('/product') === 0) {
     path = '/product'
   }
 
   const hasAuth = (item) => {
-    // 1. 如果菜单项标识为公开  
+    // 1. 如果菜单项标识为公开
     // 2. 如果当前用户是 admin
     // 3. 如果菜单项的 key 在用户的 menus 中
     const key = item.key
     const set = menuSet
-    if (
-      item.isPublic ||
-      memoryUtils.user.username === 'admin' ||
-      set.has(key)
-    ) {
+    if (item.isPublic || user.username === 'admin' || set.has(key)) {
       return true
     } else if (item.children)
       return !!item.children.find((child) => set.has(child.key))
