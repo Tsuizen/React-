@@ -66,7 +66,7 @@ export default function LeftNav() {
     <div className="left-nav">
       <Link to="/" className="left-nav-header">
         <img src={logo} alt="logo" />
-        <h1>硅谷后台</h1>
+        <h1>商城后台</h1>
       </Link>
       <div>
         <Menu
